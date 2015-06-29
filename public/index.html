@@ -106,6 +106,8 @@
      class='uk-modal'
      ng-include="'filebrowser/delete-sketch-dialog.html'"></div>
 
+<iframe id="downloader" style="display:none;"></iframe>
+
 
 <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.js'></script>
 <script src='./ace/src-noconflict/ace.js' type='text/javascript' charset='utf-8'></script>
@@ -189,6 +191,14 @@ app
         this.selectBoard = function(board) {
             this.boards.push(board);
             this.selectedBoard = board;
+        }
+        this.downloadHex = function () {
+            console.log(Sketch)
+            var name = Sketch.sketchName
+            if(name.indexOf('.')>=0) {
+                name = name.substring(0,name.lastIndexOf('.'))
+            }
+            $('#downloader').attr('src', '/download-hex/'+name)
         }
 
         this.choseBoard = function() {

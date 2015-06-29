@@ -8,6 +8,7 @@ var moment = require('moment');
 var http   = require('http');
 var websocket = require('nodejs-websocket');
 var bodyParser = require('body-parser');
+var os = require('os')
 
 
 
@@ -56,6 +57,12 @@ app.post('/compile',function(req,res) {
         res.json({status:'error',output:e.output, message: e.toString()}).end();
     }
 });
+
+app.get('/download-hex/:name', function (req, res) {
+  var hex = path.join(os.tmpdir(), 'build', 'out', req.params.name+'.hex');
+  console.log('HEX FILE:', hex)
+  res.download(hex)
+})
 
 app.post('/run',function(req,res) {
     console.log("body = ",req.body.code);
