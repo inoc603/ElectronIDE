@@ -46,10 +46,15 @@ function scanSubdirs(path) {
 
 function getIncludePaths(platform) {
     console.log("invoked for ",this.id);
+    console.log('location', this.location)
 
     if(this.source == 'ide') {
         var path = platform.getStandardLibraryPath()+'/'+this.location;
-        return scanSubdirs(path);
+        if (fs.existsSync(path))
+          return scanSubdirs(path);
+        path = platform.getAvrLibraryPath()+'/'+this.location
+        if (fs.existsSync(path))
+          return scanSubdirs(path)
     }
     if(this.path) {
         return scanSubdirs(plat.getReposPath()+'/'+this.id+'/'+this.path);
