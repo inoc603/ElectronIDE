@@ -60,10 +60,10 @@ function Platform() {
         return this.root + '/libraries';
     }
     this.getCorePath = function() {
-        return this.root + '/hardware/arduino/cores/'+this.device.build.core;
+        return this.root + '/hardware/arduino/avr/cores/'+this.device.build.core;
     }
     this.getVariantPath = function() {
-        return this.root + '/hardware/arduino/variants/'+this.device.build.variant;
+        return this.root + '/hardware/arduino/avr/variants/'+this.device.build.variant;
     }
     this.getCompilerBinaryPath = function() {
         return this.root + '/hardware/tools/avr/bin';
@@ -213,7 +213,9 @@ exports.getSettings = function() {
     for(var name in settings) {
         cln[name] = settings[name];
     }
+    console.log('* DEFAULT PLATFORM', exports.getDefaultPlatform())
     cln.user_sketches_dir = exports.getDefaultPlatform().getUserSketchesDir();
+    cln.userlibs = exports.getDefaultPlatform().getUserLibraryDir()
     return cln;
 }
 

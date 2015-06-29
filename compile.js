@@ -9,6 +9,9 @@ var async = require('async');
 var wrench = require('wrench');
 var child_process = require('child_process');
 var LIBRARIES = require('./libraries');
+var path = require('path')
+var walk = require('walk')
+var _ = require('underscore')
 
 String.prototype.endsWith = function(suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
@@ -83,6 +86,7 @@ function generateCPPFile(cfile,sketchPath) {
 
 
 function calculateLibs(list, paths, libs, debug, cb, plat) {
+    console.log('*LIST', list)
     LIBRARIES.install(list,function() {
         //install libs if needed, and add to the include paths
         list.forEach(function(libname){
@@ -214,6 +218,7 @@ function extractEEPROMData(options, outdir, cb, debug) {
 }
 
 function buildHexFile(options, outdir, cb, debug) {
+    console.log('* OUTDIR', outdir)
     var hexcmd = [
         options.platform.getCompilerBinaryPath()+'/avr-objcopy',
         '-O',
@@ -256,7 +261,6 @@ exports.compile = function(sketchPath, outdir,options, publish, sketchDir, final
     console.log("compiling to");
     console.log("sketchpath ", sketchPath);
     console.log("outdir = ", outdir);
-//    console.log("optiosn = ", options);
     console.log("sketchdir = ", sketchDir);
     var errorHit = false;
     function debug(message) {
@@ -319,8 +323,9 @@ exports.compile = function(sketchPath, outdir,options, publish, sketchDir, final
     // collect their include paths
     tasks.push(function(cb) {
 
-        var includedLibs = detectLibs(fs.readFileSync(cfile).toString());
-        debug('========= scanned for included libs',includedLibs);
+        var includedLibs = []
+        var possibleLibs = detectLibs(fs.readFileSync(cfile).toString());
+        // debug('========= scanned for included libs',includedLibs);
 
         //assemble library paths
         var librarypaths = [];
@@ -342,6 +347,17 @@ exports.compile = function(sketchPath, outdir,options, publish, sketchDir, final
 
         console.log("include path =",includepaths);
         console.log("includedlibs = ", includedLibs);
+        console.log('* USER LIB DIR', plat.getUserLibraryDir())
+        for (var lib of possibleLibs) {
+          if (fs.existsSync(plat.getStandardLibraryPath()+'/'+lib)) {
+            includedLibs.push(lib)
+          }
+          else if (fs.existsSync(plat.getUserLibraryDir()+'/'+lib)) {
+            includedLibs.push(lib)
+          }
+        }
+        // console.log(fs.readdirSync(plat.getUserLibraryDir()))
+
         calculateLibs(includedLibs,includepaths,libextra, debug, cb, plat);
     });
 
