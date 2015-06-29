@@ -62,6 +62,9 @@ function Platform() {
     this.getCorePath = function() {
         return this.root + '/hardware/arduino/avr/cores/'+this.device.build.core;
     }
+    this.getAvrLibraryPath = function () {
+        return this.root + '/hardware/arduino/avr/libraries';
+    }
     this.getVariantPath = function() {
         return this.root + '/hardware/arduino/avr/variants/'+this.device.build.variant;
     }

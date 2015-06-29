@@ -343,6 +343,7 @@ exports.compile = function(sketchPath, outdir,options, publish, sketchDir, final
         //standard global includes for the arduino core itself
         includepaths.push(plat.getCorePath());
         includepaths.push(plat.getVariantPath());
+        includepaths.push(plat.getAvrLibraryPath());
         includepaths.push(sketchDir);
 
         console.log("include path =",includepaths);
@@ -350,6 +351,9 @@ exports.compile = function(sketchPath, outdir,options, publish, sketchDir, final
         console.log('* USER LIB DIR', plat.getUserLibraryDir())
         for (var lib of possibleLibs) {
           if (fs.existsSync(plat.getStandardLibraryPath()+'/'+lib)) {
+            includedLibs.push(lib)
+          }
+          else if (fs.existsSync(plat.getAvrLibraryPath()+'/'+lib)) {
             includedLibs.push(lib)
           }
           else if (fs.existsSync(plat.getUserLibraryDir()+'/'+lib)) {
